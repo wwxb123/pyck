@@ -1,0 +1,92 @@
+安装django:pip install django
+安装mysqlclient:pip install mysqlclient
+
+创建项目
+django-admin startproject dome .
+修改配置
+LANGUAGE_CODE = 'zh-hans'
+TIME_ZONE = 'Asia/Shanghai'
+启动
+python manage.py runserver
+创建应用
+python manage.py startapp projects
+python manage.py startapp crm
+
+修改应用视图
+from django.shortcuts import render
+def index(request):
+    content = '接口自动化测试平台'
+    return render(request, 'projects/index.html',context={
+        'content':content,
+    })
+修改路由
+应用路由
+from django.urls import path
+# from projects import views
+#
+# urlpatterns = [
+#     path('', views.index, name='index'),
+#
+# ]
+主路由
+path('projects/', include('projects.urls')),  # projects/后面必须要有斜杠
+
+setting中注册应用
+INSTALLED_APPS
+'projects.apps.ProjectsConfig',  # 注册projects
+'crm.apps.CrmConfig',  # 注册crm
+
+TEMPLATES
+# 'DIRS': [],
+'DIRS': [BASE_DIR / 'templates'],
+# STATIC_URL = '/static/'
+# 静态文件前缀
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'statics']
+
+
+
+数据库
+安装pip install mysqlclient
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': str(BASE_DIR / 'utils/db/my.cnf')
+        },
+    },
+    # 'testdb': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'OPTIONS': {
+    #         'read_default_file': str(BASE_DIR / 'utils/db/my.cnf')
+    #     },
+    # }
+}
+
+MIDDLEWARE
+# 'django.middleware.csrf.CsrfViewMiddleware',
+
+编写模板 models.py文件内容
+
+生成迁移记录
+python manage.py makemigrations projects
+查看迁移的SQL语句
+python manage.py sqlmigrate projects 0001(对应的迁移记录)
+执行迁移
+#python manage.py migrate
+python manage.py migrate projects
+
+python manage.py makemigrations crm
+python manage.py sqlmigrate crm 0001
+python manage.py migrate crm
+
+django shell
+pip install ipython
+python manage.py shell
+
+防止几分钟断开
+from django.db import close_old_connections
+close_old_connections()
+
+在shell中
+from projects.models import *
