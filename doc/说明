@@ -90,3 +90,4 @@ close_old_connections()
 
 在shell中
 from projects.models import *
+
